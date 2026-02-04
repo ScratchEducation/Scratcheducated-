@@ -145,7 +145,7 @@
             document.addEventListener('touchmove', move, {passive:false});
             document.addEventListener('mouseup', () => drg = false); 
             document.addEventListener('touchend', () => drg = false);
-        }
+        } 
         document.querySelectorAll('.window').forEach(w => makeDraggable(w, w.querySelector('.title-bar')));
     </script>
 </body>
