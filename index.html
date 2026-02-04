@@ -17,26 +17,33 @@
         /* WINDOWS */
         .window {
             position: absolute; top: 10%; left: 10%;
-            width: 400px; height: 300px; min-width: 200px; min-height: 150px;
+            width: 80%; height: 70%; min-width: 250px; min-height: 200px;
             background: #1a1a1a; border-radius: 12px; display: none;
             flex-direction: column; overflow: hidden; z-index: 10;
             box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
-            resize: both; /* Native resizing */
         }
         
+        /* FULLSCREEN CLASS */
+        .maximized {
+            top: 0 !important; left: 0 !important;
+            width: 100% !important; height: 100% !important;
+            border-radius: 0;
+        }
+
         .title-bar { padding: 10px; background: #222; color: white; display: flex; justify-content: space-between; align-items: center; cursor: move; user-select: none; }
-        .win-btn { border: none; width: 25px; height: 25px; border-radius: 50%; color: white; cursor: pointer; background: #ff5f57; font-size: 14px; }
+        .window-controls { display: flex; gap: 8px; }
+        .win-btn { border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; color: rgba(0,0,0,0.5); }
+        
+        .close-btn { background: #ff5f57; color: white; }
+        .max-btn { background: #febc2e; color: #5d4100; }
         
         .content { flex-grow: 1; background: #000; position: relative; width: 100%; height: 100%; }
-        iframe { width: 100%; height: 100%; border: none; pointer-events: auto; }
-        
-        /* Iframe overlay to allow dragging over them */
+        iframe { width: 100%; height: 100%; border: none; }
         .drag-overlay { position: absolute; inset: 0; display: none; z-index: 5; }
 
-        /* NOTEPAD & SETTINGS */
-        #note-text { width: 100%; height: 100%; background: #222; color: #fff; border: none; padding: 15px; box-sizing: border-box; font-size: 16px; outline: none; }
-        .settings-grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; color: white; }
-        .wp-thumb { width: 100%; height: 60px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
+        /* SETTINGS */
+        .settings-grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .wp-thumb { width: 100%; height: 70px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; object-fit: cover; }
         .wp-thumb:hover { border-color: var(--accent); }
 
         /* TASKBAR */
@@ -46,38 +53,35 @@
             display: flex; align-items: center; gap: 15px; padding: 0 20px; border-radius: 20px; z-index: 1000;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .tb-icon { font-size: 30px; cursor: pointer; transition: transform 0.1s; }
+        .tb-icon { font-size: 30px; cursor: pointer; transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
     </style>
 </head>
 <body>
 
 <div id="desktop">
-    <div id="win-mc" class="window"><div class="title-bar"><span>Minecraft</span><button class="win-btn" onclick="cls('win-mc')">×</button></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-mc"></iframe></div></div>
+    <div id="win-mc" class="window"><div class="title-bar"><span>Minecraft</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-mc')">□</button><button class="win-btn close-btn" onclick="cls('win-mc')">×</button></div></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-mc"></iframe></div></div>
     
-    <div id="win-gd" class="window"><div class="title-bar"><span>Geometry Dash</span><button class="win-btn" onclick="cls('win-gd')">×</button></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-gd"></iframe></div></div>
+    <div id="win-gd" class="window"><div class="title-bar"><span>Geometry Dash</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-gd')">□</button><button class="win-btn close-btn" onclick="cls('win-gd')">×</button></div></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-gd"></iframe></div></div>
 
-    <div id="win-note" class="window"><div class="title-bar"><span>Notepad</span><button class="win-btn" onclick="cls('win-note')">×</button></div><div class="content"><textarea id="note-text" placeholder="Type here... contents save automatically."></textarea></div></div>
-
-    <div id="win-set" class="window"><div class="title-bar"><span>Settings</span><button class="win-btn" onclick="cls('win-set')">×</button></div><div class="content">
+    <div id="win-set" class="window"><div class="title-bar"><span>Settings</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-set')">□</button><button class="win-btn close-btn" onclick="cls('win-set')">×</button></div></div><div class="content">
         <div class="settings-grid">
-            <img src="https://images.unsplash.com/photo-1477346611705-65d1883cee1e?w=200" class="wp-thumb" onclick="setWP(this.src)">
-            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200" class="wp-thumb" onclick="setWP(this.src)">
-            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200" class="wp-thumb" onclick="setWP(this.src)">
-            <img src="https://images.unsplash.com/photo-1434725039720-aaad6dd32dee?w=200" class="wp-thumb" onclick="setWP(this.src)">
+            <img src="https://images.unsplash.com/photo-1477346611705-65d1883cee1e?auto=format&fit=crop&w=400" class="wp-thumb" onclick="setWP(this.src)">
+            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400" class="wp-thumb" onclick="setWP(this.src)">
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400" class="wp-thumb" onclick="setWP(this.src)">
+            <img src="https://images.unsplash.com/photo-1434725039720-aaad6dd32dee?auto=format&fit=crop&w=400" class="wp-thumb" onclick="setWP(this.src)">
         </div>
     </div></div>
 
     <div class="taskbar">
         <div class="tb-icon" onclick="opn('win-mc', 'https://classic.minecraft.net/')">⛏️</div>
         <div class="tb-icon" onclick="opn('win-gd', 'https://geometrylitepc.io')">🔥</div>
-        <div class="tb-icon" onclick="opn('win-note')">📝</div>
         <div class="tb-icon" onclick="opn('win-set')">⚙️</div>
-        <div class="tb-icon" onclick="window.close(); alert('Tab closing requested!')">🔴</div>
+        <div class="tb-icon" onclick="location.reload()">🔒</div>
     </div>
 </div>
 
 <script>
-    // --- OPEN / CLOSE ---
+    // --- OPEN / CLOSE / MAXIMIZE ---
     function opn(id, url) {
         const win = document.getElementById(id);
         win.style.display = 'flex';
@@ -87,18 +91,17 @@
             if(!ifr.src) ifr.src = url;
         }
     }
+    
     function cls(id) { document.getElementById(id).style.display = 'none'; }
+
+    function toggleMax(id) {
+        document.getElementById(id).classList.toggle('maximized');
+    }
 
     // --- WALLPAPER ---
     function setWP(url) { 
-        const cleanUrl = url.split('?')[0]; // Get high res version
-        document.getElementById('desktop').style.backgroundImage = `url('${cleanUrl}')`; 
+        document.getElementById('desktop').style.backgroundImage = `url('${url}')`; 
     }
-
-    // --- NOTEPAD SAVING ---
-    const note = document.getElementById('note-text');
-    note.value = localStorage.getItem('portal_note') || "";
-    note.oninput = () => localStorage.setItem('portal_note', note.value);
 
     // --- DRAGGING LOGIC ---
     document.querySelectorAll('.window').forEach(win => {
@@ -106,42 +109,34 @@
         const overlay = win.querySelector('.drag-overlay');
         let isDragging = false, offset = [0,0];
 
-        header.onmousedown = (e) => {
+        const startMove = (clientX, clientY) => {
+            if (win.classList.contains('maximized')) return; // Disable drag if full screen
             isDragging = true;
-            offset = [win.offsetLeft - e.clientX, win.offsetTop - e.clientY];
+            offset = [win.offsetLeft - clientX, win.offsetTop - clientY];
             win.style.zIndex = Date.now();
-            if(overlay) overlay.style.display = 'block'; // Stop iframe from stealing mouse
+            overlay.style.display = 'block';
         };
 
-        document.onmousemove = (e) => {
+        const onMove = (clientX, clientY) => {
             if (!isDragging) return;
-            win.style.left = (e.clientX + offset[0]) + 'px';
-            win.style.top = (e.clientY + offset[1]) + 'px';
+            win.style.left = (clientX + offset[0]) + 'px';
+            win.style.top = (clientY + offset[1]) + 'px';
         };
 
-        document.onmouseup = () => {
+        const endMove = () => {
             isDragging = false;
-            if(overlay) overlay.style.display = 'none';
+            overlay.style.display = 'none';
         };
+
+        // Mouse Events
+        header.addEventListener('mousedown', (e) => startMove(e.clientX, e.clientY));
+        document.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+        document.addEventListener('mouseup', endMove);
         
-        // Mobile Support
-        header.ontouchstart = (e) => {
-            isDragging = true;
-            const t = e.touches[0];
-            offset = [win.offsetLeft - t.clientX, win.offsetTop - t.clientY];
-            win.style.zIndex = Date.now();
-            if(overlay) overlay.style.display = 'block';
-        };
-        header.ontouchmove = (e) => {
-            if (!isDragging) return;
-            const t = e.touches[0];
-            win.style.left = (t.clientX + offset[0]) + 'px';
-            win.style.top = (t.clientY + offset[1]) + 'px';
-        };
-        header.ontouchend = () => {
-            isDragging = false;
-            if(overlay) overlay.style.display = 'none';
-        };
+        // Touch Events
+        header.addEventListener('touchstart', (e) => startMove(e.touches[0].clientX, e.touches[0].clientY));
+        document.addEventListener('touchmove', (e) => onMove(e.touches[0].clientX, e.touches[0].clientY), {passive: false});
+        document.addEventListener('touchend', endMove);
     });
 </script>
 </body>
