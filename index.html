@@ -5,73 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Scratch Learning Portal</title>
     <style>
-        :root { 
-            --accent: #a29bfe; 
-            --win-bg: rgba(255, 255, 255, 0.9);
-            --glass: rgba(0, 0, 0, 0.7);
-        }
-        
+        :root { --accent: #a29bfe; --glass: rgba(0, 0, 0, 0.7); }
         body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
 
         /* --- DECORATED LOGIN SCREEN --- */
         #login-screen {
             position: fixed; inset: 0; 
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1500');
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1500');
             background-size: cover; display: flex; align-items: center; justify-content: center; z-index: 10000;
         }
         .login-box { 
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px);
-            padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.3);
-            text-align: center; color: white; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px);
+            padding: 40px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2);
+            text-align: center; color: white; width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        .login-box h1 { margin-bottom: 5px; font-weight: 300; letter-spacing: 2px; }
         .login-box input { 
             width: 100%; padding: 12px; margin: 20px 0; border-radius: 10px; 
-            border: none; background: rgba(255,255,255,0.8); outline: none; box-sizing: border-box;
+            border: none; background: rgba(255,255,255,0.9); outline: none; box-sizing: border-box; color: #333;
         }
-        .login-box button { 
-            width: 100%; padding: 12px; border-radius: 10px; border: none; 
-            background: var(--accent); color: white; font-weight: bold; cursor: pointer;
-        }
+        .login-box button { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: white; font-weight: bold; cursor: pointer; }
 
-        /* --- DECORATED DESKTOP --- */
+        /* --- DESKTOP --- */
         #os-content {
             display: none; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1477346611705-65d1883cee1e?auto=format&fit=crop&w=1500') center/cover;
         }
 
-        /* --- WINDOWS (DRAGGABLE) --- */
+        /* --- WINDOWS --- */
         .window {
-            position: absolute; top: 50px; left: 50px;
-            width: 700px; height: 450px; /* Big enough to see, but still a window */
-            background: var(--win-bg); border-radius: 15px; display: none;
+            position: absolute; top: 40px; left: 40px;
+            width: 80%; height: 65%;
+            background: rgba(255, 255, 255, 0.95); border-radius: 15px; display: none;
             flex-direction: column; overflow: hidden; z-index: 10;
             box-shadow: 0 15px 40px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5);
-            backdrop-filter: blur(10px);
         }
-        .title-bar { 
-            padding: 12px 18px; background: rgba(240,240,240,0.8); 
-            display: flex; justify-content: space-between; align-items: center; cursor: move; touch-action: none;
-        }
-        .close-btn { background: #ff5f57; border: none; width: 22px; height: 22px; border-radius: 50%; color: white; cursor: pointer; font-size: 14px; }
-
-        /* Minecraft/GeoDash Content fix - Stretches to fill */
+        .title-bar { padding: 10px 15px; background: #eee; display: flex; justify-content: space-between; align-items: center; cursor: move; }
+        .close-btn { background: #ff5f57; border: none; width: 20px; height: 20px; border-radius: 50%; color: white; cursor: pointer; }
         .content { flex-grow: 1; background: #000; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
+        iframe { width: 100%; height: 100%; border: none; }
 
-        /* --- FLOATING TASKBAR --- */
-        .taskbar {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            height: 65px; background: var(--glass); backdrop-filter: blur(15px);
-            display: flex; align-items: center; gap: 20px; padding: 0 25px; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1); z-index: 100;
+        /* --- VIRTUAL KEYBOARD --- */
+        #keyboard {
+            position: fixed; bottom: -300px; left: 0; right: 0; 
+            background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px);
+            padding: 10px; display: flex; flex-direction: column; gap: 5px;
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 20000;
         }
-        .tb-icon { font-size: 32px; cursor: pointer; transition: 0.2s; }
-        .tb-icon:hover { transform: scale(1.2); }
+        .kb-row { display: flex; justify-content: center; gap: 5px; }
+        .key { 
+            background: #444; color: white; border: none; padding: 12px; 
+            border-radius: 6px; flex: 1; max-width: 45px; font-weight: bold; cursor: pointer;
+        }
+        .key:active { background: var(--accent); }
+        .key.wide { max-width: 100px; }
 
-        /* Desktop Icons */
-        .desktop { padding: 30px; display: flex; flex-direction: column; gap: 30px; }
-        .icon { text-align: center; color: white; cursor: pointer; width: 70px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        /* --- TASKBAR --- */
+        .taskbar {
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            height: 60px; background: var(--glass); backdrop-filter: blur(15px);
+            display: flex; align-items: center; gap: 20px; padding: 0 25px; border-radius: 18px; z-index: 100;
+        }
+        .tb-icon { font-size: 30px; cursor: pointer; transition: 0.2s; }
+        .tb-icon:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -79,9 +74,8 @@
     <div id="login-screen">
         <div class="login-box">
             <h1>WELCOME</h1>
-            <p>Authentication Required</p>
-            <input type="password" id="passInput" placeholder="Enter PIN...">
-            <button onclick="unlock()">ACCESS PORTAL</button>
+            <input type="password" id="passInput" placeholder="Enter PIN..." onclick="showKB('passInput')">
+            <button onclick="unlock()">LOGIN</button>
         </div>
     </div>
 
@@ -90,81 +84,103 @@
     </audio>
 
     <div id="os-content">
-        <div class="desktop">
-            <div class="icon" onclick="openApp('mc')">⛏️<br><small>Creative</small></div>
-            <div class="icon" onclick="openApp('gd')">🔥<br><small>Physics</small></div>
-        </div>
-
-        <div id="mc" class="window" style="width: 80%; height: 70%;">
-            <div class="title-bar"><span>Minecraft Classic</span><button class="close-btn" onclick="closeApp('mc')">×</button></div>
-            <div class="content"><iframe src="https://classic.minecraft.net/"></iframe></div>
-        </div>
-
-        <div id="gd" class="window" style="width: 80%; height: 70%;">
-            <div class="title-bar"><span>Geometry Logic</span><button class="close-btn" onclick="closeApp('gd')">×</button></div>
-            <div class="content"><iframe src="https://geometrylitepc.io"></iframe></div>
-        </div>
-
-        <div id="notes" class="window" style="width: 400px; height: 500px;">
+        <div id="mc" class="window"><div class="title-bar"><span>Minecraft</span><button class="close-btn" onclick="closeApp('mc')">×</button></div><div class="content"><iframe src="https://classic.minecraft.net/"></iframe></div></div>
+        <div id="gd" class="window"><div class="title-bar"><span>Geometry Logic</span><button class="close-btn" onclick="closeApp('gd')">×</button></div><div class="content"><iframe src="https://geometrylitepc.io"></iframe></div></div>
+        <div id="notes" class="window" style="width:350px;">
             <div class="title-bar"><span>Notes</span><button class="close-btn" onclick="closeApp('notes')">×</button></div>
-            <div class="content" style="background:white;"><textarea style="width:100%; height:100%; border:none; padding:20px; font-size:18px;"></textarea></div>
+            <div class="content" style="background:white;"><textarea id="noteArea" style="width:100%; height:100%; border:none; padding:15px; font-size:16px;" onclick="showKB('noteArea')"></textarea></div>
         </div>
 
         <div class="taskbar">
             <div class="tb-icon" onclick="openApp('mc')">⛏️</div>
             <div class="tb-icon" onclick="openApp('gd')">🔥</div>
             <div class="tb-icon" onclick="openApp('notes')">📝</div>
-            <div class="tb-icon" onclick="toggleMusic()">🎵</div>
+            <div class="tb-icon" onclick="toggleKB()">⌨️</div>
             <div class="tb-icon" onclick="location.reload()">🔒</div>
+        </div>
+    </div>
+
+    <div id="keyboard">
+        <div class="kb-row" id="row1"></div>
+        <div class="kb-row" id="row2"></div>
+        <div class="kb-row" id="row3"></div>
+        <div class="kb-row">
+            <button class="key wide" onclick="typeKey(' ')">SPACE</button>
+            <button class="key wide" style="background:#ff5f57" onclick="typeKey('BACK')">BKSP</button>
+            <button class="key wide" style="background:#4facfe" onclick="toggleKB()">HIDE</button>
         </div>
     </div>
 
     <script>
         const music = document.getElementById('bg-music');
-        
+        music.volume = 0.2; // QUIET MUSIC FIX
+
+        let activeInput = 'passInput';
+
         function unlock() {
             if(document.getElementById('passInput').value === "admin") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('os-content').style.display = 'block';
-                music.play(); // Music starts on login
+                music.play();
+                toggleKB(false);
             }
         }
 
-        function toggleMusic() {
-            return music.paused ? music.play() : music.pause();
+        // --- KEYBOARD LOGIC ---
+        const keys = [
+            ["Q","W","E","R","T","Y","U","I","O","P"],
+            ["A","S","D","F","G","H","J","K","L"],
+            ["Z","X","C","V","B","N","M",".",","]
+        ];
+
+        keys.forEach((row, i) => {
+            const container = document.getElementById('row' + (i+1));
+            row.forEach(k => {
+                const b = document.createElement('button');
+                b.className = 'key'; b.innerText = k;
+                b.onclick = () => typeKey(k);
+                container.appendChild(b);
+            });
+        });
+
+        function showKB(id) { activeInput = id; document.getElementById('keyboard').style.bottom = '0'; }
+        function toggleKB() { 
+            const kb = document.getElementById('keyboard');
+            kb.style.bottom = (kb.style.bottom === '0px') ? '-300px' : '0';
         }
 
+        function typeKey(k) {
+            const el = document.getElementById(activeInput);
+            if(k === 'BACK') el.value = el.value.slice(0, -1);
+            else el.value += k.toLowerCase();
+            el.focus();
+        }
+
+        // --- WINDOW LOGIC ---
         function openApp(id) {
             const win = document.getElementById(id);
             win.style.display = 'flex';
             win.style.zIndex = Date.now();
         }
-
         function closeApp(id) { document.getElementById(id).style.display = 'none'; }
 
-        // --- DRAGGING LOGIC ---
+        // --- DRAGGING ---
         document.querySelectorAll('.window').forEach(win => {
             const bar = win.querySelector('.title-bar');
             let isDrg = false, sx, sy, ix, iy;
             const start = (e) => {
-                isDrg = true;
-                const t = e.touches ? e.touches[0] : e;
-                sx = t.clientX; sy = t.clientY;
-                ix = win.offsetLeft; iy = win.offsetTop;
+                isDrg = true; const t = e.touches ? e.touches[0] : e;
+                sx = t.clientX; sy = t.clientY; ix = win.offsetLeft; iy = win.offsetTop;
                 win.style.zIndex = Date.now();
             };
             const move = (e) => {
-                if(!isDrg) return;
-                const t = e.touches ? e.touches[0] : e;
+                if(!isDrg) return; const t = e.touches ? e.touches[0] : e;
                 win.style.left = (ix + (t.clientX - sx)) + 'px';
                 win.style.top = (iy + (t.clientY - sy)) + 'px';
             };
-            bar.addEventListener('mousedown', start);
-            bar.addEventListener('touchstart', start);
-            document.addEventListener('mousemove', move);
-            document.addEventListener('touchmove', move, {passive: false});
-            document.addEventListener('mouseup', () => isDrg = false);
-            document.addEventListener('touchend', () => isDrg = false);
+            bar.addEventListener('mousedown', start); bar.addEventListener('touchstart', start);
+            document.addEventListener('mousemove', move); document.addEventListener('touchmove', move, {passive:false});
+            document.addEventListener('mouseup', () => isDrg = false); document.addEventListener('touchend', () => isDrg = false);
         });
     </script>
 </body>
