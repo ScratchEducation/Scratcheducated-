@@ -3,101 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>District Research Portal</title>
+    <title>Research Archive .ORG</title>
     <style>
-        :root { --win-bg: #ffffff; --header-bg: #f1f3f4; }
+        :root { --win-bg: #111; --header-bg: #222; }
         
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: system-ui, -apple-system, sans-serif; overflow: hidden; background: #000; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: sans-serif; overflow: hidden; background: #000; }
 
-        /* --- LOGIN SCREEN (FULL SIZE) --- */
+        /* --- STEALTH LOGIN --- */
         #login-screen {
             position: fixed; inset: 0; background: #fff; display: flex; 
             align-items: center; justify-content: center; z-index: 10000;
         }
-        .login-box { width: 85%; max-width: 350px; text-align: center; }
-        .login-box input { width: 100%; padding: 15px; margin: 15px 0; border: 2px solid #eee; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
-        .login-box button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; }
+        .login-box { width: 80%; max-width: 300px; text-align: center; }
+        .login-box input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .login-box button { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 5px; cursor: pointer; }
 
-        /* --- MAIN OS CONTENT --- */
+        /* --- OS CONTENT --- */
         #os-content {
             display: none; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* High contrast gradient */
+            background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
         }
 
-        /* Desktop Icons - BIGGER */
-        .desktop { display: flex; padding: 25px; gap: 25px; flex-wrap: wrap; }
-        .icon { display: flex; flex-direction: column; align-items: center; width: 80px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .icon-img { font-size: 50px; margin-bottom: 8px; }
-        .icon-label { font-size: 14px; font-weight: 600; }
+        .desktop { padding: 20px; display: flex; gap: 20px; }
+        .icon { text-align: center; color: white; cursor: pointer; width: 70px; }
+        .icon-img { font-size: 45px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .icon-label { font-size: 12px; font-weight: bold; margin-top: 5px; }
 
-        /* Windows - ADAPTIVE SIZE */
+        /* --- THE FIXED WINDOW --- */
         .window {
             position: absolute; 
-            top: 20px; left: 20px; right: 20px; bottom: 100px; /* Forces a large size on any screen */
-            background: var(--win-bg); border-radius: 16px; display: none;
+            top: 10px; left: 10px; right: 10px; bottom: 90px; /* HUGE windows */
+            background: #000; border-radius: 10px; display: none;
             flex-direction: column; overflow: hidden; z-index: 10;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid #444;
         }
         
-        /* Larger Title Bar for Touch */
+        /* Thin Title Bar */
         .title-bar { 
-            padding: 15px 20px; background: var(--header-bg); 
+            padding: 8px 15px; background: var(--header-bg); 
             display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid #ddd; touch-action: none;
+            touch-action: none; color: white;
         }
-        .title-text { font-size: 16px; font-weight: 700; color: #3c4043; }
+        .title-text { font-size: 14px; font-weight: bold; }
         .close-btn { 
-            background: #ea4335; color: white; border: none; 
-            width: 35px; height: 35px; border-radius: 10px; 
-            font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center;
+            background: #ff5f57; color: white; border: none; 
+            width: 25px; height: 25px; border-radius: 5px; cursor: pointer;
         }
 
-        .content { flex-grow: 1; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; }
-        textarea { width: 100%; height: 100%; border: none; padding: 20px; font-size: 18px; outline: none; box-sizing: border-box; }
+        /* ZERO PADDING CONTENT */
+        .content { flex-grow: 1; background: #000; margin: 0; padding: 0; display: flex; }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
+        textarea { width: 100%; height: 100%; border: none; padding: 20px; font-size: 18px; background: #fff; box-sizing: border-box; }
 
-        /* --- BIG TASKBAR --- */
+        /* --- TASKBAR --- */
         .taskbar {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            height: 70px; width: auto; min-width: 250px;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px);
-            display: flex; align-items: center; justify-content: space-around; 
-            padding: 0 20px; border-radius: 24px; z-index: 100;
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            height: 60px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            display: flex; align-items: center; gap: 20px; padding: 0 25px; border-radius: 15px;
         }
-        .tb-icon { font-size: 40px; cursor: pointer; padding: 5px; }
+        .tb-icon { font-size: 35px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h1 style="color:#1a73e8">Portal</h1>
-            <p>Enter Research ID</p>
-            <input type="password" id="passInput" placeholder="ID Number..." autofocus>
-            <button onclick="unlock()">ACCESS ARCHIVE</button>
+            <h2>System Login</h2>
+            <input type="password" id="passInput" placeholder="Password...">
+            <button onclick="unlock()">Login</button>
         </div>
     </div>
 
     <div id="os-content">
         <div class="desktop">
             <div class="icon" onclick="openApp('mc')"><div class="icon-img">⛏️</div><div class="icon-label">Minecraft</div></div>
-            <div class="icon" onclick="openApp('notes')"><div class="icon-img">📝</div><div class="icon-label">Notepad</div></div>
+            <div class="icon" onclick="openApp('notes')"><div class="icon-img">📝</div><div class="icon-label">Notes</div></div>
         </div>
 
         <div id="mc" class="window">
             <div class="title-bar">
-                <span class="title-text">Minecraft Classic</span>
-                <button class="close-btn" onclick="closeApp('mc')">✕</button>
+                <span class="title-text">Minecraft</span>
+                <button class="close-btn" onclick="closeApp('mc')">×</button>
             </div>
-            <div class="content"><iframe src="https://classic.minecraft.net/"></iframe></div>
+            <div class="content">
+                <iframe src="https://classic.minecraft.net/"></iframe>
+            </div>
         </div>
 
         <div id="notes" class="window">
             <div class="title-bar">
-                <span class="title-text">Project Notes</span>
-                <button class="close-btn" onclick="closeApp('notes')">✕</button>
+                <span class="title-text">Notes</span>
+                <button class="close-btn" onclick="closeApp('notes')">×</button>
             </div>
-            <div class="content"><textarea placeholder="Start writing..."></textarea></div>
+            <div class="content"><textarea></textarea></div>
         </div>
 
         <div class="taskbar">
@@ -112,38 +111,34 @@
             if(document.getElementById('passInput').value === "admin") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('os-content').style.display = 'block';
-            } else { alert("Invalid ID"); }
+            }
         }
 
         function openApp(id) {
-            const win = document.getElementById(id);
-            win.style.display = 'flex';
-            win.style.zIndex = Date.now();
+            document.getElementById(id).style.display = 'flex';
+            document.getElementById(id).style.zIndex = Date.now();
         }
 
         function closeApp(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Touch Dragging for Mobile/Tablet
+        // Dragging Logic
         document.querySelectorAll('.window').forEach(win => {
             const bar = win.querySelector('.title-bar');
             let isDrg = false, sx, sy, ix, iy;
-
             const start = (e) => {
                 isDrg = true;
-                const touch = e.touches ? e.touches[0] : e;
-                sx = touch.clientX; sy = touch.clientY;
+                const t = e.touches ? e.touches[0] : e;
+                sx = t.clientX; sy = t.clientY;
                 ix = win.offsetLeft; iy = win.offsetTop;
                 win.style.zIndex = Date.now();
             };
-
             const move = (e) => {
                 if(!isDrg) return;
-                const touch = e.touches ? e.touches[0] : e;
-                win.style.left = (ix + (touch.clientX - sx)) + 'px';
-                win.style.top = (iy + (touch.clientY - sy)) + 'px';
-                win.style.right = 'auto'; win.style.bottom = 'auto'; // Reset "fixed" bounds
+                const t = e.touches ? e.touches[0] : e;
+                win.style.left = (ix + (t.clientX - sx)) + 'px';
+                win.style.top = (iy + (t.clientY - sy)) + 'px';
+                win.style.right = 'auto'; win.style.bottom = 'auto';
             };
-
             bar.addEventListener('mousedown', start);
             bar.addEventListener('touchstart', start);
             document.addEventListener('mousemove', move);
