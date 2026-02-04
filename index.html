@@ -3,103 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Scratch Educational Portal</title>
+    <title>Scratch Learning Portal</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100vh; font-family: sans-serif; overflow: hidden; background: #000; }
-        
-        /* STEALTH LOGIN */
-        #login { position: fixed; inset: 0; background: #fff; z-index: 999; display: flex; align-items: center; justify-content: center; }
-        .box { text-align: center; width: 85%; max-width: 320px; }
-        input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; margin: 10px 0; box-sizing: border-box; font-size: 16px; }
-        
-        /* FULL SCREEN WINDOWS */
-        .win { 
-            position: absolute; 
-            inset: 0 0 70px 0; /* Fills screen above taskbar */
-            background: #000; display: none; flex-direction: column; z-index: 10;
+        :root { 
+            --accent: #a29bfe; 
+            --win-bg: rgba(255, 255, 255, 0.9);
+            --glass: rgba(0, 0, 0, 0.7);
         }
-        .bar { 
-            background: #1a1a1a; padding: 8px 15px; display: flex; 
-            justify-content: space-between; align-items: center; color: #fff; 
-            border-bottom: 1px solid #333;
-        }
-        .close { background: #ff5f57; border: none; color: #fff; width: 30px; height: 30px; border-radius: 6px; font-weight: bold; cursor: pointer; }
         
-        /* CONTENT STRETCH (No Borders) */
-        .content { flex-grow: 1; margin: 0; padding: 0; overflow: hidden; display: flex; }
-        iframe { width: 100%; height: 100%; border: none; flex-grow: 1; }
-        textarea { width: 100%; height: 100%; border: none; padding: 20px; font-size: 18px; outline: none; box-sizing: border-box; background: #fff; }
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
 
-        /* DESKTOP BACKGROUND */
+        /* --- DECORATED LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed; inset: 0; 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1500');
+            background-size: cover; display: flex; align-items: center; justify-content: center; z-index: 10000;
+        }
+        .login-box { 
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.3);
+            text-align: center; color: white; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .login-box h1 { margin-bottom: 5px; font-weight: 300; letter-spacing: 2px; }
+        .login-box input { 
+            width: 100%; padding: 12px; margin: 20px 0; border-radius: 10px; 
+            border: none; background: rgba(255,255,255,0.8); outline: none; box-sizing: border-box;
+        }
+        .login-box button { 
+            width: 100%; padding: 12px; border-radius: 10px; border: none; 
+            background: var(--accent); color: white; font-weight: bold; cursor: pointer;
+        }
+
+        /* --- DECORATED DESKTOP --- */
         #os-content {
             display: none; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #1e3c72, #2a5298);
+            background: url('https://images.unsplash.com/photo-1477346611705-65d1883cee1e?auto=format&fit=crop&w=1500') center/cover;
         }
 
-        /* TASKBAR */
-        .taskbar { 
-            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
-            background: rgba(0,0,0,0.9); display: flex; align-items: center; 
-            justify-content: center; gap: 35px; border-top: 1px solid #333; z-index: 100;
+        /* --- WINDOWS (DRAGGABLE) --- */
+        .window {
+            position: absolute; top: 50px; left: 50px;
+            width: 700px; height: 450px; /* Big enough to see, but still a window */
+            background: var(--win-bg); border-radius: 15px; display: none;
+            flex-direction: column; overflow: hidden; z-index: 10;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(10px);
         }
-        .btn { font-size: 38px; cursor: pointer; transition: transform 0.1s; }
-        .btn:active { transform: scale(0.9); }
+        .title-bar { 
+            padding: 12px 18px; background: rgba(240,240,240,0.8); 
+            display: flex; justify-content: space-between; align-items: center; cursor: move; touch-action: none;
+        }
+        .close-btn { background: #ff5f57; border: none; width: 22px; height: 22px; border-radius: 50%; color: white; cursor: pointer; font-size: 14px; }
+
+        /* Minecraft/GeoDash Content fix - Stretches to fill */
+        .content { flex-grow: 1; background: #000; position: relative; }
+        iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
+
+        /* --- FLOATING TASKBAR --- */
+        .taskbar {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            height: 65px; background: var(--glass); backdrop-filter: blur(15px);
+            display: flex; align-items: center; gap: 20px; padding: 0 25px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1); z-index: 100;
+        }
+        .tb-icon { font-size: 32px; cursor: pointer; transition: 0.2s; }
+        .tb-icon:hover { transform: scale(1.2); }
+
+        /* Desktop Icons */
+        .desktop { padding: 30px; display: flex; flex-direction: column; gap: 30px; }
+        .icon { text-align: center; color: white; cursor: pointer; width: 70px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-    <div id="login">
-        <div class="box">
-            <h2 style="color:#222">District Learning Hub</h2>
-            <p style="color:#666; font-size: 12px;">Sign in with Student ID</p>
-            <input type="password" id="pw" placeholder="Enter ID Number...">
-            <button onclick="unlock()" style="width:100%; padding:15px; background:#1a73e8; color:#fff; border:none; border-radius:10px; font-weight:bold;">SIGN IN</button>
+    <div id="login-screen">
+        <div class="login-box">
+            <h1>WELCOME</h1>
+            <p>Authentication Required</p>
+            <input type="password" id="passInput" placeholder="Enter PIN...">
+            <button onclick="unlock()">ACCESS PORTAL</button>
         </div>
     </div>
 
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="os-content">
-        <div id="mc" class="win">
-            <div class="bar"><span>Creative Engine</span><button class="close" onclick="cls('mc')">×</button></div>
+        <div class="desktop">
+            <div class="icon" onclick="openApp('mc')">⛏️<br><small>Creative</small></div>
+            <div class="icon" onclick="openApp('gd')">🔥<br><small>Physics</small></div>
+        </div>
+
+        <div id="mc" class="window" style="width: 80%; height: 70%;">
+            <div class="title-bar"><span>Minecraft Classic</span><button class="close-btn" onclick="closeApp('mc')">×</button></div>
             <div class="content"><iframe src="https://classic.minecraft.net/"></iframe></div>
         </div>
 
-        <div id="gd" class="win">
-            <div class="bar"><span>Logic Physics Test</span><button class="close" onclick="cls('gd')">×</button></div>
+        <div id="gd" class="window" style="width: 80%; height: 70%;">
+            <div class="title-bar"><span>Geometry Logic</span><button class="close-btn" onclick="closeApp('gd')">×</button></div>
             <div class="content"><iframe src="https://geometrylitepc.io"></iframe></div>
         </div>
 
-        <div id="notes" class="win">
-            <div class="bar"><span>Research Notes</span><button class="close" onclick="cls('notes')">×</button></div>
-            <div class="content"><textarea placeholder="Log your findings..."></textarea></div>
+        <div id="notes" class="window" style="width: 400px; height: 500px;">
+            <div class="title-bar"><span>Notes</span><button class="close-btn" onclick="closeApp('notes')">×</button></div>
+            <div class="content" style="background:white;"><textarea style="width:100%; height:100%; border:none; padding:20px; font-size:18px;"></textarea></div>
         </div>
 
         <div class="taskbar">
-            <div class="btn" onclick="opn('mc')" title="Minecraft">⛏️</div>
-            <div class="btn" onclick="opn('gd')" title="Geometry Dash">🔥</div>
-            <div class="btn" onclick="opn('notes')" title="Notes">📝</div>
-            <div class="btn" onclick="location.reload()" title="Lock Screen">🔒</div>
+            <div class="tb-icon" onclick="openApp('mc')">⛏️</div>
+            <div class="tb-icon" onclick="openApp('gd')">🔥</div>
+            <div class="tb-icon" onclick="openApp('notes')">📝</div>
+            <div class="tb-icon" onclick="toggleMusic()">🎵</div>
+            <div class="tb-icon" onclick="location.reload()">🔒</div>
         </div>
     </div>
 
     <script>
-        function unlock() { 
-            if(document.getElementById('pw').value === 'admin') {
-                document.getElementById('login').style.display='none';
-                document.getElementById('os-content').style.display='block';
-            } else {
-                alert("Incorrect Student ID");
+        const music = document.getElementById('bg-music');
+        
+        function unlock() {
+            if(document.getElementById('passInput').value === "admin") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('os-content').style.display = 'block';
+                music.play(); // Music starts on login
             }
         }
 
-        function opn(id) { 
-            // Close others so the screen doesn't get messy
-            document.querySelectorAll('.win').forEach(w => w.style.display = 'none'); 
-            document.getElementById(id).style.display='flex'; 
+        function toggleMusic() {
+            return music.paused ? music.play() : music.pause();
         }
 
-        function cls(id) { 
-            document.getElementById(id).style.display='none'; 
+        function openApp(id) {
+            const win = document.getElementById(id);
+            win.style.display = 'flex';
+            win.style.zIndex = Date.now();
         }
+
+        function closeApp(id) { document.getElementById(id).style.display = 'none'; }
+
+        // --- DRAGGING LOGIC ---
+        document.querySelectorAll('.window').forEach(win => {
+            const bar = win.querySelector('.title-bar');
+            let isDrg = false, sx, sy, ix, iy;
+            const start = (e) => {
+                isDrg = true;
+                const t = e.touches ? e.touches[0] : e;
+                sx = t.clientX; sy = t.clientY;
+                ix = win.offsetLeft; iy = win.offsetTop;
+                win.style.zIndex = Date.now();
+            };
+            const move = (e) => {
+                if(!isDrg) return;
+                const t = e.touches ? e.touches[0] : e;
+                win.style.left = (ix + (t.clientX - sx)) + 'px';
+                win.style.top = (iy + (t.clientY - sy)) + 'px';
+            };
+            bar.addEventListener('mousedown', start);
+            bar.addEventListener('touchstart', start);
+            document.addEventListener('mousemove', move);
+            document.addEventListener('touchmove', move, {passive: false});
+            document.addEventListener('mouseup', () => isDrg = false);
+            document.addEventListener('touchend', () => isDrg = false);
+        });
     </script>
 </body>
 </html>
