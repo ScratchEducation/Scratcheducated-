@@ -3,90 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Portal</title>
+    <title>Portal OS</title>
     <style>
-        :root { --accent: #a29bfe; --glass: rgba(0, 0, 0, 0.85); }
+        :root { --accent: #a29bfe; --glass: rgba(0, 0, 0, 0.8); }
         body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #000; }
         
-        #os-content {
+        #desktop {
             width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1477346611705-65d1883cee1e?auto=format&fit=crop&w=1500') center/cover;
+            transition: background 0.5s ease;
         }
 
-        /* FLOATING WINDOWS */
+        /* WINDOWS */
         .window {
-            position: absolute; top: 5%; left: 5%;
-            width: 90%; height: 80%;
-            background: #1a1a1a; border-radius: 15px; display: none;
+            position: absolute; top: 10%; left: 10%;
+            width: 400px; height: 300px; min-width: 200px; min-height: 150px;
+            background: #1a1a1a; border-radius: 12px; display: none;
             flex-direction: column; overflow: hidden; z-index: 10;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+            resize: both; /* Native resizing */
         }
         
-        @media (max-width: 600px) { .window { width: 100%!important; height: 100%!important; top:0!important; left:0!important; border-radius:0; } }
-
-        .title-bar { padding: 12px; background: #222; color: white; display: flex; justify-content: space-between; align-items: center; }
-        .win-btn { border: none; width: 30px; height: 30px; border-radius: 50%; color: white; cursor: pointer; font-size: 18px; }
-        .close-btn { background: #ff5f57; }
+        .title-bar { padding: 10px; background: #222; color: white; display: flex; justify-content: space-between; align-items: center; cursor: move; user-select: none; }
+        .win-btn { border: none; width: 25px; height: 25px; border-radius: 50%; color: white; cursor: pointer; background: #ff5f57; font-size: 14px; }
         
-        .content { flex-grow: 1; background: #000; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; }
+        .content { flex-grow: 1; background: #000; position: relative; width: 100%; height: 100%; }
+        iframe { width: 100%; height: 100%; border: none; pointer-events: auto; }
+        
+        /* Iframe overlay to allow dragging over them */
+        .drag-overlay { position: absolute; inset: 0; display: none; z-index: 5; }
 
-        /* THE TASKBAR */
+        /* NOTEPAD & SETTINGS */
+        #note-text { width: 100%; height: 100%; background: #222; color: #fff; border: none; padding: 15px; box-sizing: border-box; font-size: 16px; outline: none; }
+        .settings-grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; color: white; }
+        .wp-thumb { width: 100%; height: 60px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; }
+        .wp-thumb:hover { border-color: var(--accent); }
+
+        /* TASKBAR */
         .taskbar {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             height: 65px; background: var(--glass); backdrop-filter: blur(20px);
-            display: flex; align-items: center; gap: 20px; padding: 0 25px; border-radius: 20px; z-index: 100;
+            display: flex; align-items: center; gap: 15px; padding: 0 20px; border-radius: 20px; z-index: 1000;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .tb-icon { font-size: 32px; cursor: pointer; transition: transform 0.1s; }
+        .tb-icon { font-size: 30px; cursor: pointer; transition: transform 0.1s; }
     </style>
 </head>
 <body>
 
-    <div id="os-content">
-        <div id="mc" class="window"><div class="title-bar" onclick="rld('mc')"><span>Minecraft (Tap to Fix)</span><button class="win-btn close-btn" onclick="cls('mc')">×</button></div><div class="content"><iframe id="ifr-mc"></iframe></div></div>
-        
-        <div id="gd" class="window"><div class="title-bar" onclick="rld('gd')"><span>GDash (Tap to Fix)</span><button class="win-btn close-btn" onclick="cls('gd')">×</button></div><div class="content"><iframe id="ifr-gd"></iframe></div></div>
+<div id="desktop">
+    <div id="win-mc" class="window"><div class="title-bar"><span>Minecraft</span><button class="win-btn" onclick="cls('win-mc')">×</button></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-mc"></iframe></div></div>
+    
+    <div id="win-gd" class="window"><div class="title-bar"><span>Geometry Dash</span><button class="win-btn" onclick="cls('win-gd')">×</button></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-gd"></iframe></div></div>
 
-        <div id="slope" class="window"><div class="title-bar" onclick="rld('slope')"><span>Slope (Tap to Fix)</span><button class="win-btn close-btn" onclick="cls('slope')">×</button></div><div class="content"><iframe id="ifr-slope"></iframe></div></div>
+    <div id="win-note" class="window"><div class="title-bar"><span>Notepad</span><button class="win-btn" onclick="cls('win-note')">×</button></div><div class="content"><textarea id="note-text" placeholder="Type here... contents save automatically."></textarea></div></div>
 
-        <div class="taskbar">
-            <div class="tb-icon" onclick="opn('mc', 'https://classic.minecraft.net/')">⛏️</div>
-            <div class="tb-icon" onclick="opn('gd', 'https://geometrylitepc.io')">🔥</div>
-            <div class="tb-icon" onclick="opn('slope', 'https://slopegame.io/')">⚽</div>
-            <div class="tb-icon" onclick="location.reload()">🔄</div>
+    <div id="win-set" class="window"><div class="title-bar"><span>Settings</span><button class="win-btn" onclick="cls('win-set')">×</button></div><div class="content">
+        <div class="settings-grid">
+            <img src="https://images.unsplash.com/photo-1477346611705-65d1883cee1e?w=200" class="wp-thumb" onclick="setWP(this.src)">
+            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200" class="wp-thumb" onclick="setWP(this.src)">
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200" class="wp-thumb" onclick="setWP(this.src)">
+            <img src="https://images.unsplash.com/photo-1434725039720-aaad6dd32dee?w=200" class="wp-thumb" onclick="setWP(this.src)">
         </div>
-    </div>
+    </div></div>
 
-    <script>
-        const links = {
-            'mc': 'https://classic.minecraft.net/',
-            'gd': 'https://geometrylitepc.io',
-            'slope': 'https://slopegame.io/'
+    <div class="taskbar">
+        <div class="tb-icon" onclick="opn('win-mc', 'https://classic.minecraft.net/')">⛏️</div>
+        <div class="tb-icon" onclick="opn('win-gd', 'https://geometrylitepc.io')">🔥</div>
+        <div class="tb-icon" onclick="opn('win-note')">📝</div>
+        <div class="tb-icon" onclick="opn('win-set')">⚙️</div>
+        <div class="tb-icon" onclick="window.close(); alert('Tab closing requested!')">🔴</div>
+    </div>
+</div>
+
+<script>
+    // --- OPEN / CLOSE ---
+    function opn(id, url) {
+        const win = document.getElementById(id);
+        win.style.display = 'flex';
+        win.style.zIndex = Date.now();
+        if(url) {
+            const ifr = win.querySelector('iframe');
+            if(!ifr.src) ifr.src = url;
+        }
+    }
+    function cls(id) { document.getElementById(id).style.display = 'none'; }
+
+    // --- WALLPAPER ---
+    function setWP(url) { 
+        const cleanUrl = url.split('?')[0]; // Get high res version
+        document.getElementById('desktop').style.backgroundImage = `url('${cleanUrl}')`; 
+    }
+
+    // --- NOTEPAD SAVING ---
+    const note = document.getElementById('note-text');
+    note.value = localStorage.getItem('portal_note') || "";
+    note.oninput = () => localStorage.setItem('portal_note', note.value);
+
+    // --- DRAGGING LOGIC ---
+    document.querySelectorAll('.window').forEach(win => {
+        const header = win.querySelector('.title-bar');
+        const overlay = win.querySelector('.drag-overlay');
+        let isDragging = false, offset = [0,0];
+
+        header.onmousedown = (e) => {
+            isDragging = true;
+            offset = [win.offsetLeft - e.clientX, win.offsetTop - e.clientY];
+            win.style.zIndex = Date.now();
+            if(overlay) overlay.style.display = 'block'; // Stop iframe from stealing mouse
         };
 
-        function opn(id, url) { 
-            const win = document.getElementById(id);
-            const ifr = document.getElementById('ifr-' + id);
-            
-            // Set sandbox to allow everything but prevent top-level navigation
-            ifr.setAttribute('sandbox', 'allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-same-origin');
-            ifr.src = url;
-            
-            win.style.display = 'flex'; 
-            win.style.zIndex = Date.now(); 
-        }
-        
-        function cls(id) { 
-            document.getElementById(id).style.display = 'none'; 
-            document.getElementById('ifr-' + id).src = ""; 
-        }
+        document.onmousemove = (e) => {
+            if (!isDragging) return;
+            win.style.left = (e.clientX + offset[0]) + 'px';
+            win.style.top = (e.clientY + offset[1]) + 'px';
+        };
 
-        // The Fixer: If it's black, tapping the top bar re-injects the link
-        function rld(id) {
-            const ifr = document.getElementById('ifr-' + id);
-            ifr.src = links[id];
-        }
-    </script>
+        document.onmouseup = () => {
+            isDragging = false;
+            if(overlay) overlay.style.display = 'none';
+        };
+        
+        // Mobile Support
+        header.ontouchstart = (e) => {
+            isDragging = true;
+            const t = e.touches[0];
+            offset = [win.offsetLeft - t.clientX, win.offsetTop - t.clientY];
+            win.style.zIndex = Date.now();
+            if(overlay) overlay.style.display = 'block';
+        };
+        header.ontouchmove = (e) => {
+            if (!isDragging) return;
+            const t = e.touches[0];
+            win.style.left = (t.clientX + offset[0]) + 'px';
+            win.style.top = (t.clientY + offset[1]) + 'px';
+        };
+        header.ontouchend = () => {
+            isDragging = false;
+            if(overlay) overlay.style.display = 'none';
+        };
+    });
+</script>
 </body>
 </html>
+
