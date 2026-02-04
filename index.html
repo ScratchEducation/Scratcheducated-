@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Portal OS</title>
+    <title>Portal OS - Unblocked Edition</title>
     <style>
         :root { --accent: #a29bfe; --glass: rgba(0, 0, 0, 0.85); }
         body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Segoe UI', sans-serif; overflow: hidden; background: #000; }
@@ -23,7 +23,6 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1);
         }
         
-        /* FULLSCREEN STATE */
         .maximized {
             top: 0 !important; left: 0 !important;
             width: 100% !important; height: 100% !important;
@@ -40,9 +39,7 @@
         }
         
         .close-btn { background: #ff5f57; color: white; }
-        
-        /* YOUR YELLOW MAXIMIZE BUTTON */
-        .max-btn { background: #ffea00; color: #000; } 
+        .max-btn { background: #ffea00; color: #000; } /* YOUR YELLOW CIRCLE */
         
         .content { flex-grow: 1; background: #000; position: relative; width: 100%; height: 100%; }
         iframe { width: 100%; height: 100%; border: none; }
@@ -53,14 +50,16 @@
         .wp-thumb { width: 100%; height: 80px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; object-fit: cover; }
         .wp-thumb:hover { border-color: var(--accent); }
 
-        /* TASKBAR */
+        /* TASKBAR - Adjusted for more icons */
         .taskbar {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             height: 70px; background: var(--glass); backdrop-filter: blur(25px);
-            display: flex; align-items: center; gap: 20px; padding: 0 25px; border-radius: 20px; z-index: 1000;
+            display: flex; align-items: center; gap: 15px; padding: 0 20px; border-radius: 20px; z-index: 1000;
             border: 1px solid rgba(255,255,255,0.1);
+            max-width: 90vw; overflow-x: auto;
         }
-        .tb-icon { font-size: 35px; cursor: pointer; transition: 0.1s; -webkit-tap-highlight-color: transparent; }
+        .tb-icon { font-size: 30px; cursor: pointer; transition: 0.1s; -webkit-tap-highlight-color: transparent; flex-shrink: 0; }
+        .tb-icon:hover { transform: scale(1.2); }
     </style>
 </head>
 <body>
@@ -69,6 +68,12 @@
     <div id="win-mc" class="window"><div class="title-bar"><span>Minecraft</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-mc')">●</button><button class="win-btn close-btn" onclick="cls('win-mc')">×</button></div></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-mc"></iframe></div></div>
     
     <div id="win-gd" class="window"><div class="title-bar"><span>Geometry Dash</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-gd')">●</button><button class="win-btn close-btn" onclick="cls('win-gd')">×</button></div></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-gd"></iframe></div></div>
+
+    <div id="win-slope" class="window"><div class="title-bar"><span>Slope</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-slope')">●</button><button class="win-btn close-btn" onclick="cls('win-slope')">×</button></div></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-slope"></iframe></div></div>
+    
+    <div id="win-1v1" class="window"><div class="title-bar"><span>1v1.LOL</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-1v1')">●</button><button class="win-btn close-btn" onclick="cls('win-1v1')">×</button></div></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-1v1"></iframe></div></div>
+
+    <div id="win-rb" class="window"><div class="title-bar"><span>Retro Bowl</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-rb')">●</button><button class="win-btn close-btn" onclick="cls('win-rb')">×</button></div></div><div class="content"><div class="drag-overlay"></div><iframe id="ifr-rb"></iframe></div></div>
 
     <div id="win-set" class="window"><div class="title-bar"><span>Settings</span><div class="window-controls"><button class="win-btn max-btn" onclick="toggleMax('win-set')">●</button><button class="win-btn close-btn" onclick="cls('win-set')">×</button></div></div><div class="content">
         <div class="settings-grid">
@@ -80,10 +85,13 @@
     </div></div>
 
     <div class="taskbar">
-        <div class="tb-icon" onclick="opn('win-mc', 'https://classic.minecraft.net/')">⛏️</div>
-        <div class="tb-icon" onclick="opn('win-gd', 'https://geometrylitepc.io')">🔥</div>
-        <div class="tb-icon" onclick="opn('win-set')">⚙️</div>
-        <div class="tb-icon" onclick="location.reload()">🔄</div>
+        <div class="tb-icon" title="Minecraft" onclick="opn('win-mc', 'https://classic.minecraft.net/')">⛏️</div>
+        <div class="tb-icon" title="Geometry Dash" onclick="opn('win-gd', 'https://geometrylitepc.io')">🔥</div>
+        <div class="tb-icon" title="Slope" onclick="opn('win-slope', 'https://slopegame.io/')">🎾</div>
+        <div class="tb-icon" title="1v1.LOL" onclick="opn('win-1v1', 'https://1v1.lol/')">🔫</div>
+        <div class="tb-icon" title="Retro Bowl" onclick="opn('win-rb', 'https://game312.github.io/retro-bowl/')">🏈</div>
+        <div class="tb-icon" title="Settings" onclick="opn('win-set')">⚙️</div>
+        <div class="tb-icon" title="Reload" onclick="location.reload()">🔄</div>
     </div>
 </div>
 
@@ -94,15 +102,14 @@
         win.style.zIndex = Date.now();
         if(url) {
             const ifr = win.querySelector('iframe');
-            // We set the URL every time so it starts playing when opened
-            ifr.src = url;
+            if(!ifr.src) ifr.src = url;
         }
     }
     
     function cls(id) { 
         const win = document.getElementById(id);
         win.style.display = 'none'; 
-        // FIX: Clear the iframe src to stop music/video from playing in background
+        // THIS KILLS THE PROCESS (STOPS THE SOUND)
         const ifr = win.querySelector('iframe');
         if(ifr) ifr.src = "";
     }
@@ -144,7 +151,6 @@
         document.onmousemove = (e) => move(e.clientX, e.clientY);
         document.onmouseup = end;
         
-        // --- MOBILE/TABLET DRAG FIX ---
         header.ontouchstart = (e) => start(e.touches[0].clientX, e.touches[0].clientY);
         header.ontouchmove = (e) => move(e.touches[0].clientX, e.touches[0].clientY);
         header.ontouchend = end;
